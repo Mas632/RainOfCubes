@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Cube : MonoBehaviour
 {
     [Header("Настройки самоликвидации куба при выходе его за границы области")]
-    [SerializeField] private bool _checkDistance;
+    [SerializeField] private bool _isDistanceChecking;
     [SerializeField] private float _maxDistance;
 
     [Header("Настройки продолжительности жизни куба после столкновения")]
@@ -16,7 +16,7 @@ public class Cube : MonoBehaviour
 
     private bool _isSelfDestroyActive;
 
-    public event UnityAction<Cube> Disappearing;
+    public event UnityAction<Cube> Disappeared;
     
     private void OnEnable()
     {
@@ -25,7 +25,7 @@ public class Cube : MonoBehaviour
 
     private void Update()
     {
-        if (_checkDistance)
+        if (_isDistanceChecking)
         {
             Vector3 worldCenter = Vector3.zero;
 
@@ -49,7 +49,7 @@ public class Cube : MonoBehaviour
     {
         _isSelfDestroyActive = true;
         yield return new WaitForSeconds(Random.Range(_minLifeTimeAfterCollision, _maxLifeTimeAfterCollision));
-        Disappearing?.Invoke(this);
+        Disappeared?.Invoke(this);
     }
 
     private void ChangeColorToRandom()

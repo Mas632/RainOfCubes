@@ -55,15 +55,24 @@ public class CubesCreator : MonoBehaviour
     private void CustomizeCube(Cube cube)
     {
         cube.transform.SetPositionAndRotation(Randomizer.GetPoint(_spawnArea), Quaternion.identity);
-        cube.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        cube.GetComponent<MeshRenderer>().material.color = _cubeDefaultColor;
-        cube.Disappearing += ReturnCubeToPool;
+
+        if (cube.TryGetComponent(out Rigidbody rigidbody))
+        {
+            rigidbody.velocity = Vector3.zero;
+        }
+
+        if (cube.TryGetComponent(out MeshRenderer meshRenderer))
+        {
+            meshRenderer.material.color = _cubeDefaultColor;
+        }
+
+        cube.Disappeared += ReturnCubeToPool;
         cube.gameObject.SetActive(true);
     }
 
     private void ReturnCubeToPool(Cube cube)
     {
-        cube.Disappearing -= ReturnCubeToPool;
+        cube.Disappeared -= ReturnCubeToPool;
         _pool.Release(cube);
     }
 }
